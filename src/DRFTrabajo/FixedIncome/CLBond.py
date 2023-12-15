@@ -7,7 +7,6 @@ from .Coupons import FixedCoupon
 class CLBond:
     def __init__(self, coupons: [FixedCoupon], tera: None): 
         self.coupons =  coupons
-        tera = tera
         self.tera = tera if tera is not None else self.set_tera()
 
     def set_tera(self):
@@ -25,6 +24,7 @@ class CLBond:
 
 
     def get_day_count_fraction(self, start_date: date, end_date: date):
+        ##actual/365
         days = (end_date - start_date).days
         return days / 365.0
 
@@ -37,9 +37,9 @@ class CLBond:
         pv = 0
         for i, coupon in enumerate(future_coupons):
             day_count_fraction = self.get_day_count_fraction(fecha, coupon.coupondate)
-            pv += (coupon.flow / (1 + rate ) **day_count_fraction) * notional
+            pv += (coupon.flow*notional / (1 + rate ) **day_count_fraction) 
         day_count_fraction_last = self.get_day_count_fraction(fecha, future_coupons[-1].coupondate)
-        pv += (future_coupons[-1].residual / (1 + rate ) ** day_count_fraction_last) * notional
+        pv += (future_coupons[-1].residual* notional / (1 + rate ) ** day_count_fraction_last) 
 
         return pv
 
