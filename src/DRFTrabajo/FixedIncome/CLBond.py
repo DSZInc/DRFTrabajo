@@ -64,9 +64,7 @@ class CLBond:
     
     def get_dv01(self, notional: float, rate: float, fecha: date) ->float:
         duration = self.calculate_duration(notional, rate, fecha)
-        print(duration)
         pv = self.get_value(notional, rate, fecha)
-        print(pv)
         dv01 = -pv*duration/10_000
         return dv01
         
