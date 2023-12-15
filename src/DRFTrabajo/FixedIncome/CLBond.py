@@ -1,19 +1,8 @@
 from datetime import date
 import numpy as np
 from scipy.optimize import fsolve
+from .Coupons import FixedCoupon
 
-
-class FixedCoupon:
-## clase para cada cupon
-## asumimos que además de los parametros pedidos era necesario agregar las fecha de cada cupon
-## de lo contrario no podríamos calcular el vp o el dv01 más adelante
-    def __init__(self, amortization: float, interest: float, residual: float, coupondate:date, startdate : date):
-        self.startdate = startdate
-        self.coupondate = coupondate
-        self.amortization = float(amortization)
-        self.interest = float(interest)
-        self.residual = float(residual)
-        self.flow = self.amortization+self.interest
 
 class CLBond:
     def __init__(self, coupons: [FixedCoupon], tera: None): 
@@ -79,5 +68,3 @@ class CLBond:
         duration = self.calculate_duration(rate, initial_date, notional)
         pv = self.get_value(rate, initial_date, notional)
         dv01 = -pv*duration/10000
-
-
