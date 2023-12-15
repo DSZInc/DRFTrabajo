@@ -5,6 +5,8 @@ from .Coupons import FixedCoupon
 
 
 class CLBond:
+    ## asumimos que los itereses y amortizaciones en base 100 se refieren
+    ## a un porcentaje del nocional
     def __init__(self, coupons: [FixedCoupon], **kwargs): 
         self.coupons =  coupons
         tera = kwargs.get('tera', None)
@@ -14,8 +16,9 @@ class CLBond:
         notional = 100
         start_date = self.coupons[0].startdate
 
-        def objective_function(self,tera):
-            return self.get_value(tera, start_date, notional) - notional
+
+        def objective_function(tera):
+            return self.get_value(notional, tera[0], start_date) - notional
 
         initial_guess = 0.05
 
@@ -38,34 +41,33 @@ class CLBond:
         pv = 0
         for i, coupon in enumerate(future_coupons):
             day_count_fraction = self.get_day_count_fraction(fecha, coupon.coupondate)
-            pv += (coupon.flow*notional / (1 + rate ) **day_count_fraction) 
-        #day_count_fraction_last = self.get_day_count_fraction(fecha, future_coupons[-1].coupondate)
-        #pv += (future_coupons[-1].residual* notional / (1 + rate ) ** day_count_fraction_last) 
+            pv += (coupon.flow / (1 + rate ) **day_count_fraction)
+        return pv*notional/100
 
-        return pv
-
-    def calculate_duration(self, discount_rate: float, initial_date: date, notional: float):
+    def calculate_duration(self, notional: float, discount_rate: float, initial_date: date):
         future_coupons = [coupon for coupon in self.coupons if coupon.coupondate >= initial_date]
 
         if not future_coupons:
             raise ValueError("No future coupons available for duration calculation.")
 
         weighted_sum = 0
-        pv = self.get_value(discount_rate, initial_date, notional)
+        pv = self.get_value(notional, discount_rate, initial_date)
 
         for i, coupon in enumerate(future_coupons):
             day_count_fraction = self.get_day_count_fraction(initial_date, coupon.coupondate)
-            weighted_sum += day_count_fraction * (coupon.flow / (1 + discount_rate) ** day_count_fraction) * notional
-
-        day_count_fraction_last = self.get_day_count_fraction(initial_date, future_coupons[-1].coupondate)
-        weighted_sum += day_count_fraction_last * (future_coupons[-1].residual / (1 + discount_rate) ** day_count_fraction_last) * notional
+            weighted_sum += day_count_fraction * (coupon.flow / (1 + discount_rate) ** day_count_fraction)/100 * notional
 
         duration = weighted_sum / pv
 
         return duration
 
     
-    def get_dv01(self, notional: float, rate: float, initial_date: date) ->float:
-        duration = self.calculate_duration(rate, initial_date, notional)
-        pv = self.get_value(rate, initial_date, notional)
-        dv01 = -pv*duration/10000
+    def get_dv01(self, notional: float, rate: float, fecha: date) ->float:
+        duration = self.calculate_duration(notional, rate, fecha)
+        print(duration)
+        pv = self.get_value(notional, rate, fecha)
+        print(pv)
+        dv01 = -pv*duration/10_000
+        return dv01
+        
+    
