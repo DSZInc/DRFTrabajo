@@ -39,8 +39,8 @@ class CLBond:
         for i, coupon in enumerate(future_coupons):
             day_count_fraction = self.get_day_count_fraction(fecha, coupon.coupondate)
             pv += (coupon.flow*notional / (1 + rate ) **day_count_fraction) 
-        day_count_fraction_last = self.get_day_count_fraction(fecha, future_coupons[-1].coupondate)
-        pv += (future_coupons[-1].residual* notional / (1 + rate ) ** day_count_fraction_last) 
+        #day_count_fraction_last = self.get_day_count_fraction(fecha, future_coupons[-1].coupondate)
+        #pv += (future_coupons[-1].residual* notional / (1 + rate ) ** day_count_fraction_last) 
 
         return pv
 
