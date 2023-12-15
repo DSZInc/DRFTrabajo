@@ -14,7 +14,7 @@ class CLBond:
         notional = 100
         start_date = self.coupons[0].startdate
 
-        def objective_function(tera):
+        def objective_function(self,tera):
             return self.get_value(tera, start_date, notional) - notional
 
         initial_guess = 0.05
