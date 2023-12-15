@@ -28,17 +28,17 @@ class CLBond:
         days = (end_date - start_date).days
         return days / 365.0
 
-    def get_value(self, rate: float, initial_date: date, notional: float):
-        future_coupons = [coupon for coupon in self.coupons if coupon.coupondate >= initial_date]
+    def get_value(self, notional: float, rate: float, fecha: date):
+        future_coupons = [coupon for coupon in self.coupons if coupon.coupondate >= fecha]
 
         if not future_coupons:
             raise ValueError("No future coupons available for present value calculation.")
 
         pv = 0
         for i, coupon in enumerate(future_coupons):
-            day_count_fraction = self.get_day_count_fraction(initial_date, coupon.coupondate)
+            day_count_fraction = self.get_day_count_fraction(fecha, coupon.coupondate)
             pv += (coupon.flow / (1 + rate ) **day_count_fraction) * notional
-        day_count_fraction_last = self.get_day_count_fraction(initial_date, future_coupons[-1].coupondate)
+        day_count_fraction_last = self.get_day_count_fraction(fecha, future_coupons[-1].coupondate)
         pv += (future_coupons[-1].residual / (1 + rate ) ** day_count_fraction_last) * notional
 
         return pv
