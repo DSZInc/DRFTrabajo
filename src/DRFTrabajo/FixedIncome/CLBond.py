@@ -5,8 +5,9 @@ from .Coupons import FixedCoupon
 
 
 class CLBond:
-    def __init__(self, coupons: [FixedCoupon], tera): 
+    def __init__(self, coupons: [FixedCoupon], **kwargs): 
         self.coupons =  coupons
+        tera = kwargs.get('tera', None)
         self.tera = tera if tera is not None else self.set_tera()
 
     def set_tera(self):
