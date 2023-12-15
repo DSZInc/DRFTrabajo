@@ -5,7 +5,7 @@ from .Coupons import FixedCoupon
 
 
 class CLBond:
-    def __init__(self, coupons: [FixedCoupon], tera: None): 
+    def __init__(self, coupons: [FixedCoupon], tera): 
         self.coupons =  coupons
         self.tera = tera if tera is not None else self.set_tera()
 
