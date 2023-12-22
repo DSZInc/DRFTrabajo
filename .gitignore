@@ -401,3 +401,5 @@ FodyWeavers.xsd
 #testing files
 
 /main.py
+
+/tests
